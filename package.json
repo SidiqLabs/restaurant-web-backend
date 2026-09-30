@@ -1,0 +1,16 @@
+{
+  "name": "restaurant-web-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backend service for the SidiqLabs Foody restaurant marketplace.",
+  "type": "module",
+  "scripts": {
+    "lock:list": "node scripts/work-locks.mjs list",
+    "lock:check": "node scripts/work-locks.mjs check",
+    "lock:add": "node scripts/work-locks.mjs add",
+    "lock:remove": "node scripts/work-locks.mjs remove"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
