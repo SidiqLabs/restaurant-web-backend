@@ -8,9 +8,37 @@
     "lock:list": "node scripts/work-locks.mjs list",
     "lock:check": "node scripts/work-locks.mjs check",
     "lock:add": "node scripts/work-locks.mjs add",
-    "lock:remove": "node scripts/work-locks.mjs remove"
+    "lock:remove": "node scripts/work-locks.mjs remove",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --exclude \"dist/**\""
   },
   "engines": {
     "node": ">=22"
-  }
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.3",
+    "@types/supertest": "^7.2.1",
+    "eslint": "^10.11.0",
+    "supertest": "^7.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.2"
+  },
+  "main": "dist/server.js"
 }
