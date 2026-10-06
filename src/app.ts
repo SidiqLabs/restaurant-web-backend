@@ -8,6 +8,7 @@ import { logger } from "./lib/logger.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { notFoundHandler } from "./middleware/not-found.js";
 import { requestId } from "./middleware/request-id.js";
+import { authRouter } from "./routes/auth.js";
 import { healthRouter } from "./routes/health.js";
 
 // Keep application construction separate from server startup so tests
@@ -54,6 +55,8 @@ export function createApp() {
   );
 
   app.use("/health", healthRouter);
+
+  app.use("/api/auth", authRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

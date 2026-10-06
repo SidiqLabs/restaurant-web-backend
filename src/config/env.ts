@@ -13,6 +13,11 @@ const envSchema = z.object({
     .string()
     .min(1)
     .startsWith("postgresql://", "DATABASE_URL must use PostgreSQL"),
+  // Sign access tokens only with server-side secret material.
+  JWT_SECRET: z
+    .string()
+    .min(32, "JWT_SECRET must contain at least 32 characters"),
+
   LOG_LEVEL: z
     .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
     .default("info"),
