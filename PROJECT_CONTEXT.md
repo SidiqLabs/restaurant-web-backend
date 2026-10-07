@@ -383,6 +383,15 @@ Current implementation baseline:
 
 `837ebef`
 
+Current documentation/tooling session:
+
+- Session 4.5 — Swagger / OpenAPI
+  - Status: COMPLETE
+  - Scope: API documentation tooling only
+  - Swagger UI: `/api-docs`
+  - OpenAPI JSON: `/api-docs.json`
+  - Initial documented domain: Auth
+
 Next planned feature session:
 
 `Session 5 — Restaurant + Menu`
