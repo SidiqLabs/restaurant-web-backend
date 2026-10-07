@@ -37,11 +37,34 @@ describe("OpenAPI documentation", () => {
     ).toEqual([{ bearerAuth: [] }]);
   });
 
-  it("serves Swagger UI", async () => {
+  it("serves Swagger UI with a docs-only compatible CSP", async () => {
     const response = await request(createApp())
       .get("/api-docs/")
       .expect(200);
 
     expect(response.text).toContain("Swagger UI");
+
+    const contentSecurityPolicy =
+      response.headers["content-security-policy"];
+
+    expect(contentSecurityPolicy).toContain(
+      "script-src 'self' 'unsafe-inline'",
+    );
+  });
+
+  it("keeps the strict CSP outside Swagger UI", async () => {
+    const response = await request(createApp())
+      .get("/health")
+      .expect(200);
+
+    const contentSecurityPolicy =
+      response.headers["content-security-policy"];
+
+    expect(contentSecurityPolicy).toContain(
+      "script-src 'self'",
+    );
+    expect(contentSecurityPolicy).not.toContain(
+      "script-src 'self' 'unsafe-inline'",
+    );
   });
 });

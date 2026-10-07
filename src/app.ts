@@ -62,8 +62,21 @@ export function createApp() {
     res.json(openApiDocument);
   });
 
+  // Swagger UI uses an inline bootstrap script. Relax CSP only for the
+  // documentation UI while keeping the default Helmet policy everywhere else.
+  const swaggerContentSecurityPolicy = helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      fontSrc: ["'self'", "data:"],
+    },
+  });
+
   app.use(
     "/api-docs",
+    swaggerContentSecurityPolicy,
     swaggerUi.serve,
     swaggerUi.setup(openApiDocument, {
       explorer: true,
