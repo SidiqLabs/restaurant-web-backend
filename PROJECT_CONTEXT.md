@@ -355,9 +355,38 @@ rollback, monitoring, and recovery consideration.
 
 Current phase:
 
-`Governance and backend foundation`
+`Backend application development`
 
-Application features have not started yet.
+Completed sessions:
 
-Do not prematurely implement auth, restaurant, cart, order, review,
-payment, or storage features during the governance phase.
+- Session 1 — Governance
+  - Commit: `7260b7a`
+  - Status: COMPLETE
+- Session 2 — Backend Foundation
+  - Commit: `39b3408`
+  - Status: COMPLETE
+- Session 3 — PostgreSQL + Drizzle Foundation
+  - Commit: `b69d832`
+  - Status: COMPLETE
+- Session 4 — Auth + Identity
+  - Implementation commit: `837ebef`
+  - Status: COMPLETE
+  - Auth integration tests: 7/7 PASS
+  - Full test suite: PASS
+  - Typecheck: PASS
+  - Lint: PASS
+  - Build: PASS
+  - Security review: PASS
+  - Production dependency audit: 0 vulnerabilities
+
+Current implementation baseline:
+
+`837ebef`
+
+Next planned feature session:
+
+`Session 5 — Restaurant + Menu`
+
+Session discipline remains mandatory. Do not implement Session 5 or later
+features before the corresponding session is explicitly opened and its
+target paths are claimed through the work-lock protocol.
