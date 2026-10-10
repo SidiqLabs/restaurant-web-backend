@@ -53,3 +53,10 @@ export async function editMenu(userId: unknown, restaurantId: number, id: number
 }
 
 export const searchRestaurants = repository.searchRestaurants;
+
+export async function recommendedRestaurants() {
+  return {
+    recommendations: await repository.recommendedRestaurants(),
+    message: "Catalog suggestions ordered by restaurant ID; not personalized",
+  };
+}

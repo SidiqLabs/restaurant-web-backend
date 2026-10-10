@@ -17,3 +17,5 @@ export type Pagination = z.infer<typeof listSchema>;
 
 export const searchSchema = listSchema.extend({ q: z.string().trim().min(1).max(200) });
 export type RestaurantSearch = z.infer<typeof searchSchema>;
+
+export const recommendedSchema = z.strictObject({});

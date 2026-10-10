@@ -56,6 +56,23 @@ const searchResponse = {
 const restaurantId = { name: "restaurantId", in: "path", required: true, schema: integerId };
 const menuId = { name: "menuId", in: "path", required: true, schema: integerId };
 export const catalogPaths = {
+  "/api/resto/recommended": { get: {
+    tags: ["Restaurant and Menu"], summary: "Recommended restaurant catalog suggestions",
+    description: "Public non-personalized catalog fallback: at most 20 restaurants ordered by ascending ID. No query parameters accepted. Persisted restaurant fields only; no ratings, ranking scores or distances. Empty catalog returns an empty recommendations array.",
+    security: [], parameters: [],
+    responses: {
+      "200": { description: "Catalog suggestions", content: { "application/json": { schema: {
+        type: "object", required: ["success", "message", "data"], properties: {
+          success: { type: "boolean", enum: [true] }, message: { type: "string", enum: ["Catalog request successful"] },
+          data: { type: "object", required: ["recommendations", "message"], properties: {
+            recommendations: { type: "array", maxItems: 20, items: { $ref: "#/components/schemas/Restaurant" } },
+            message: { type: "string", enum: ["Catalog suggestions ordered by restaurant ID; not personalized"] },
+          } },
+        },
+      } } } },
+      "400": searchOperation.responses["400"],
+    },
+  } },
   "/api/resto/search": { get: {
     ...searchOperation, summary: "Search restaurants",
     description: "Public literal substring search ordered by ascending restaurant ID. Only q, page and limit are accepted, each once. No matches or a page beyond the results returns an empty restaurants array. Restaurant DTO has persisted fields only; frontend card metadata is not supplied.",

@@ -37,7 +37,7 @@ restaurants belong to that admin; admins may manage all restaurants.
 Registration continues to create customers; this session adds no role-grant
 endpoint. POST is not idempotent. PATCH changes supplied fields and timestamps.
 
-This session provides no deletion endpoints, recommendations, rankings,
+This session provides no deletion endpoints, rankings,
 reviews, distance calculations, image uploads, or invented rating fields.
 Those features require additional authoritative data and separate work.
 
@@ -91,3 +91,36 @@ star, place, logo, images, category and reviewCount absent from our DTO/schema.
 The frontend needs to adapt cards to persisted fields (address instead of
 place) and optional metadata, or wait for separately implemented domains.
 This endpoint does not fabricate those fields or alter frontend files.
+
+## Recommended restaurants — Session 5C.2
+
+`GET /api/resto/recommended` is public and registered before the dynamic ID
+route. It accepts no query parameters; unknown, repeated, structured or
+pagination parameters return HTTP 400 with
+`{ "success": false, "message": "Invalid request" }`.
+
+With no authoritative recommendation signals in the existing models, this
+endpoint provides a non-personalized catalog fallback: at most 20 restaurants
+ordered by ascending ID. It uses a single bounded database query, has no
+pagination, and requires no migration. Restaurants without menus are included.
+It does not infer popularity from menu count or fabricate ratings or distances.
+
+HTTP 200 response (also returned for an empty catalog):
+
+```json
+{
+  "success": true,
+  "message": "Catalog request successful",
+  "data": {
+    "recommendations": [],
+    "message": "Catalog suggestions ordered by restaurant ID; not personalized"
+  }
+}
+```
+
+Each recommendation uses the persisted Restaurant DTO described above. The
+container matches the locally inspected frontend `RecommendedRestaurantsData`
+in `src/types/restaurant.ts` and its no-parameter request in
+`src/services/queries/restaurants.ts`. Full card compatibility remains limited
+by the absent frontend metadata described in Session 5C.1. Existing list,
+search, detail, menu and write contracts are unchanged.

@@ -47,3 +47,7 @@ export async function searchRestaurants({ q, page, limit }: RestaurantSearch) {
     return { restaurants: rows, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }, searchQuery: q };
   }, { isolationLevel: "repeatable read", accessMode: "read only" });
 }
+
+export async function recommendedRestaurants() {
+  return db.select().from(restaurants).orderBy(asc(restaurants.id)).limit(20);
+}
