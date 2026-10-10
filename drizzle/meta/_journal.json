@@ -8,6 +8,13 @@
       "when": 1791187648851,
       "tag": "0000_dry_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791659360615,
+      "tag": "0001_fuzzy_hellcat",
+      "breakpoints": true
     }
   ]
 }

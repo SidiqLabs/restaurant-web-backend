@@ -11,6 +11,7 @@ import { notFoundHandler } from "./middleware/not-found.js";
 import { requestId } from "./middleware/request-id.js";
 import { openApiDocument } from "./openapi.js";
 import { authRouter } from "./routes/auth.js";
+import { restoRouter } from "./routes/resto.js";
 import { healthRouter } from "./routes/health.js";
 
 // Keep application construction separate from server startup so tests
@@ -84,6 +85,7 @@ export function createApp() {
   );
 
   app.use("/api/auth", authRouter);
+  app.use("/api/resto", restoRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

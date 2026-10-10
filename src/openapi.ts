@@ -1,3 +1,5 @@
+import { catalogPaths, catalogSchemas } from "./modules/restaurants/openapi.js";
+
 export const openApiDocument = {
   openapi: "3.0.3",
 
@@ -16,6 +18,7 @@ export const openApiDocument = {
   ],
 
   tags: [
+    { name: "Restaurant and Menu", description: "Public catalog and authorized management." },
     {
       name: "Authentication",
       description: "User registration, login, and identity.",
@@ -32,6 +35,7 @@ export const openApiDocument = {
     },
 
     schemas: {
+      ...catalogSchemas,
       PublicUser: {
         type: "object",
         required: [
@@ -143,6 +147,7 @@ export const openApiDocument = {
   },
 
   paths: {
+    ...catalogPaths,
     "/api/auth/register": {
       post: {
         tags: ["Authentication"],
