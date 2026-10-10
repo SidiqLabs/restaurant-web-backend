@@ -14,3 +14,6 @@ export const menuUpdateSchema = z.strictObject({ name: name.optional(), descript
 export type RestaurantInput = z.infer<typeof restaurantSchema>;
 export type MenuInput = z.infer<typeof menuSchema>;
 export type Pagination = z.infer<typeof listSchema>;
+
+export const searchSchema = listSchema.extend({ q: z.string().trim().min(1).max(200) });
+export type RestaurantSearch = z.infer<typeof searchSchema>;

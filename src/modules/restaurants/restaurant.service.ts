@@ -51,3 +51,5 @@ export async function editMenu(userId: unknown, restaurantId: number, id: number
   await getMenu(restaurantId, id);
   return repository.updateMenu(restaurantId, id, input);
 }
+
+export const searchRestaurants = repository.searchRestaurants;

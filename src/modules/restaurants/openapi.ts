@@ -32,9 +32,38 @@ function operation(resource: "Restaurant" | "Menu", method: "get" | "post" | "pa
     },
   };
 }
+const searchOperation = operation("Restaurant", "get", true, [
+  { name: "q", in: "query", required: true, schema: { type: "string", minLength: 1, maxLength: 200 }, description: "Trimmed literal case-insensitive substring of name or description. Missing or blank input returns 400. %, _ and backslash are literal." },
+]);
+const searchResponse = {
+  type: "object", required: ["success", "message", "data"],
+  properties: {
+    success: { type: "boolean", enum: [true] }, message: { type: "string" },
+    data: {
+      type: "object", required: ["restaurants", "pagination", "searchQuery"],
+      properties: {
+        restaurants: { type: "array", items: { $ref: "#/components/schemas/Restaurant" } },
+        searchQuery: { type: "string" },
+        pagination: { type: "object", required: ["page", "limit", "total", "totalPages"], properties: {
+          page: { type: "integer", minimum: 1, maximum: 10000 },
+          limit: { type: "integer", minimum: 1, maximum: 100 },
+          total: { type: "integer", minimum: 0 }, totalPages: { type: "integer", minimum: 0 },
+        } },
+      },
+    },
+  },
+};
 const restaurantId = { name: "restaurantId", in: "path", required: true, schema: integerId };
 const menuId = { name: "menuId", in: "path", required: true, schema: integerId };
 export const catalogPaths = {
+  "/api/resto/search": { get: {
+    ...searchOperation, summary: "Search restaurants",
+    description: "Public literal substring search ordered by ascending restaurant ID. Only q, page and limit are accepted, each once. No matches or a page beyond the results returns an empty restaurants array. Restaurant DTO has persisted fields only; frontend card metadata is not supplied.",
+    responses: {
+      "200": { description: "Search results", content: { "application/json": { schema: searchResponse } } },
+      "400": searchOperation.responses["400"],
+    },
+  } },
   "/api/resto": { get: operation("Restaurant", "get", true), post: operation("Restaurant", "post") },
   "/api/resto/{restaurantId}": { get: operation("Restaurant", "get", false, [restaurantId]), patch: operation("Restaurant", "patch", false, [restaurantId]) },
   "/api/resto/{restaurantId}/menu": { get: operation("Menu", "get", true, [restaurantId]), post: operation("Menu", "post", false, [restaurantId]) },

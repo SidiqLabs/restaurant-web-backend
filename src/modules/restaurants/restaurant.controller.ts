@@ -3,15 +3,16 @@ import { z } from "zod";
 import * as schema from "./restaurant.schema.js";
 import * as service from "./restaurant.service.js";
 
-type Operation = "list" | "get" | "create" | "update" | "menus" | "menu" | "createMenu" | "updateMenu";
+type Operation = "list" | "search" | "get" | "create" | "update" | "menus" | "menu" | "createMenu" | "updateMenu";
 export function catalogHandler(operation: Operation): RequestHandler {
   return async (req, res) => {
     try {
       const userId: unknown = res.locals.authUserId;
-      const id = ["list", "create"].includes(operation) ? 0 : schema.idSchema.parse(req.params.restaurantId);
+      const id = ["list", "search", "create"].includes(operation) ? 0 : schema.idSchema.parse(req.params.restaurantId);
       const menuId = ["menu", "updateMenu"].includes(operation) ? schema.idSchema.parse(req.params.menuId) : 0;
       let data: unknown;
       switch (operation) {
+        case "search": data = await service.searchRestaurants(schema.searchSchema.parse(req.query)); break;
         case "list": data = await service.listRestaurants(schema.listSchema.parse(req.query)); break;
         case "get": data = await service.getRestaurant(id); break;
         case "create": data = await service.createRestaurant(userId, schema.restaurantSchema.parse(req.body)); break;

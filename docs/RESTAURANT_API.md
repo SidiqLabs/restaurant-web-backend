@@ -45,3 +45,49 @@ Migration `0001` adds tables, indexes, foreign keys with restricted deletion,
 and a nonnegative-price constraint. It does not remove or alter existing user
 data. Apply through the normal migration runner. Recovery should favor a
 forward corrective migration; do not drop populated catalog tables.
+
+## Restaurant search — Session 5C.1
+
+`GET /api/resto/search` is public and registered before the dynamic ID route.
+Accepts only `q`, `page`, and `limit`, each once. `q` is required, trimmed,
+and must contain 1–200 characters after trimming; missing, empty or whitespace
+input returns 400. Pagination uses the catalog defaults/bounds: page 1–10000
+(default 1), limit 1–100 (default 20), positive decimal integers only.
+Unknown, repeated, malformed and out-of-range parameters return
+`{ "success": false, "message": "Invalid request" }` with HTTP 400.
+
+Search matches literal case-insensitive substrings of persisted name OR
+description using parameterized Drizzle ILIKE queries. `%`, `_`, and `\`
+are escaped as literal characters, not user-controlled wildcards. Results
+are ordered by ascending ID. Count and results use one repeatable-read,
+read-only snapshot. No schema change or migration is required.
+
+HTTP 200 response shape:
+
+```json
+{
+  "success": true,
+  "message": "Catalog request successful",
+  "data": {
+    "restaurants": [],
+    "pagination": { "page": 1, "limit": 20, "total": 0, "totalPages": 0 },
+    "searchQuery": "trimmed query"
+  }
+}
+```
+
+Restaurants use the existing persisted DTO: id, ownerId, name, description,
+address, createdAt, updatedAt. No matches yields total/totalPages zero;
+a page beyond the last returns an empty array with the actual total retained.
+
+Contract source: locally inspected `restaurant-web-frontend-sidiqlabs` (also
+present in `restaurant-web-frontend`), `src/services/queries/restaurants.ts`,
+`src/types/restaurant.ts`, and `src/app/search/SearchClient.tsx`. The request,
+envelope, searchQuery and pagination/container shape match that consumer,
+including its infinite-query totalPages usage. The nested wrapper is a
+search-specific compatibility choice; existing catalog lists stay arrays.
+Full frontend compatibility is NOT established: RestaurantListItem requires
+star, place, logo, images, category and reviewCount absent from our DTO/schema.
+The frontend needs to adapt cards to persisted fields (address instead of
+place) and optional metadata, or wait for separately implemented domains.
+This endpoint does not fabricate those fields or alter frontend files.

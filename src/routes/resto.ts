@@ -5,6 +5,7 @@ import { catalogHandler } from "../modules/restaurants/restaurant.controller.js"
 export const restoRouter = Router();
 restoRouter.get("/", catalogHandler("list"));
 restoRouter.post("/", authenticate, catalogHandler("create"));
+restoRouter.get("/search", catalogHandler("search"));
 restoRouter.get("/:restaurantId", catalogHandler("get"));
 restoRouter.patch("/:restaurantId", authenticate, catalogHandler("update"));
 restoRouter.get("/:restaurantId/menu", catalogHandler("menus"));
