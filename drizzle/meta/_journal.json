@@ -15,6 +15,13 @@
       "when": 1791659360615,
       "tag": "0001_fuzzy_hellcat",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791667779082,
+      "tag": "0002_orders_storage_foundation",
+      "breakpoints": true
     }
   ]
 }

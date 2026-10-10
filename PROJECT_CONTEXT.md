@@ -379,9 +379,9 @@ Completed sessions:
   - Security review: PASS
   - Production dependency audit: 0 vulnerabilities
 
-Current implementation baseline:
+Current implementation baseline before Orders Storage Foundation:
 
-`837ebef`
+`ca0b17d` (verified local main; remote synchronization not checked in this session)
 
 Current documentation/tooling session:
 
@@ -392,10 +392,36 @@ Current documentation/tooling session:
   - OpenAPI JSON: `/api-docs.json`
   - Initial documented domain: Auth
 
-Next planned feature session:
+Subsequent completed implementation sessions (verified local Git history):
 
-`Session 5 — Restaurant + Menu`
+- Session 4.5 CSP correction — `ee06635`
+- Session 5b — Restaurant + Menu catalog — `e28efd7`
+- Session 5c1 — Restaurant search — `a101382`
+- Session 5c2 — Restaurant recommended — `ca0b17d`
 
-Session discipline remains mandatory. Do not implement Session 5 or later
-features before the corresponding session is explicitly opened and its
-target paths are claimed through the work-lock protocol.
+Current authorized session (2026-10-10):
+
+- Orders Storage Foundation; owner `codex`, scope `orders-storage-foundation`.
+- Owner decision: **DATABASE-FIRST READINESS**. Real PostgreSQL structures must
+  exist independently of business records; never seed fake orders, sales or rankings.
+- Adds Drizzle orders/order_items, migration 0002, relational/money checks,
+  immutable purchase snapshots and focused schema/database invariant tests.
+- One order represents one restaurant; multi-restaurant checkout grouping is deferred.
+- Fulfillment status is separate from future payment persistence.
+- No Cart, Checkout API, Payments, Best Seller or frontend changes.
+- Migration status: **NOT_APPLIED**; no verified isolated database was configured.
+  Source/migration readiness does not assert tables already exist in a running DB.
+- Migration execution and database invariant verification remain pending.
+- Baseline worktree contained only untracked `docs/SESSION_HANDOFF.md`; preserved.
+  That older handoff is historical and does not describe the verified current baseline.
+- Observed QA: 11 tests passed, 1 opt-in database test skipped; typecheck,
+  lint, build, git diff --check and Drizzle snapshot/schema comparison passed.
+  Full DB-dependent suites were not run; PostgreSQL execution is unverified.
+- Schema/migration review checked restrictive deletion, restaurant consistency,
+  integer bounds, snapshot mutation protection and additive migration scope.
+- No automatic commit or push. See `docs/ORDERS_STORAGE.md` for limitations,
+  migration safety, recovery and opt-in database tests.
+
+Next safe step: verify an isolated development/test database, apply the reviewed
+nondestructive migration, and run the rollback-only PostgreSQL invariant test.
+Later domain implementation requires its own authorized scope and work locks.
