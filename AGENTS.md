@@ -345,3 +345,10 @@ Never claim:
 - a security property exists merely because documentation says so
 
 Report observed state separately from intended design.
+
+
+## Codex Development Autonomy Policy
+
+Before modifying project code, read `docs/CODEX_DEVELOPMENT_AUTONOMY.md`.
+
+Apply its DRAFT, IN_PROGRESS, FINAL, and LOCKED classifications while preserving the authority of `PROJECT_CONTEXT.md` and existing work-lock rules.
