@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { authenticate } from "../middleware/authenticate.js";
+import { reviewHandler } from "../modules/reviews/review.controller.js";
+export const reviewsRouter = Router();
+reviewsRouter.get("/restaurant/:restaurantId", reviewHandler("public"));
+reviewsRouter.use(authenticate);
+reviewsRouter.post("/", reviewHandler("create"));
+reviewsRouter.get("/my-reviews", reviewHandler("my"));
+reviewsRouter.put("/:id", reviewHandler("update"));
+reviewsRouter.delete("/:id", reviewHandler("delete"));

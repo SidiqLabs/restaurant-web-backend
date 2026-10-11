@@ -1,6 +1,7 @@
 import { catalogPaths, catalogSchemas } from "./modules/restaurants/openapi.js";
 import { cartPaths, cartSchemas } from "./modules/cart/openapi.js";
 import { checkoutPaths, checkoutSchemas } from "./modules/checkout/openapi.js";
+import { reviewPaths, reviewSchemas } from "./modules/reviews/openapi.js";
 
 export const openApiDocument = {
   openapi: "3.0.3",
@@ -20,6 +21,7 @@ export const openApiDocument = {
   ],
 
   tags: [
+    { name: "Reviews", description: "Verified completed-purchase restaurant reviews." },
     { name: "Orders", description: "Customer checkout and owned order history." },
     { name: "Cart", description: "Authenticated customer shopping state." },
     { name: "Restaurant and Menu", description: "Public catalog and authorized management." },
@@ -41,6 +43,7 @@ export const openApiDocument = {
     schemas: {
       ...cartSchemas,
       ...checkoutSchemas,
+      ...reviewSchemas,
       ...catalogSchemas,
       PublicUser: {
         type: "object",
@@ -155,6 +158,7 @@ export const openApiDocument = {
   paths: {
     ...cartPaths,
     ...checkoutPaths,
+    ...reviewPaths,
     ...catalogPaths,
     "/api/auth/register": {
       post: {

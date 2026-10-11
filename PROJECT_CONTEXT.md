@@ -480,7 +480,7 @@ Completed session — Cart Persistence + API (2026-10-11):
 Cart Git closeout completed at `62ad0dc539cf31a4006c9767fa5848685b5a8ee7`,
 with full local/origin main parity verified before the next session.
 
-Current authorized session — Checkout + Order Creation (2026-10-11):
+Completed session — Checkout + Order Creation (2026-10-11):
 
 - Starting main/origin baseline `62ad0dc539cf31a4006c9767fa5848685b5a8ee7`;
   no active locks and no unrelated tracked changes before scoped ownership.
@@ -514,6 +514,46 @@ Current authorized session — Checkout + Order Creation (2026-10-11):
   `docs/SESSION_CHECKOUT_HANDOFF.md`. Authorized focused commit/push and full
   SHA parity are independently reported at Git closeout.
 
-Next safe step after Checkout Git closeout: a separately authorized frontend
-adapter or next-domain session. Deployment to a user database requires separate
-operational review. Do not infer payment success from checkout.
+Checkout Git closeout completed at
+`ddabc1893551319bca439702572e2f1aea411c38`, with local/origin main parity
+verified before this explicitly authorized Reviews session.
+
+Reviews API session (2026-10-11):
+
+- Baseline main/origin `ddabc1893551319bca439702572e2f1aea411c38`;
+  tracked tree clean, protected untracked handoff/backup preserved, no active
+  locks before exact scoped ownership. Reviews follows the completed backend
+  domains in project direction; no separate ordered roadmap file is present.
+- Implemented POST `/api/review`, GET `/api/review/my-reviews`, public GET
+  `/api/review/restaurant/{restaurantId}`, PUT/DELETE `/api/review/{id}`.
+  Current CUSTOMER eligibility requires an owned COMPLETED checkout order;
+  purchased menu snapshots, integer stars 1..5 and strict bounded comments.
+- One review per order, unique even after terminal soft delete. Only the
+  customer owner edits/deletes. Active-only public count/average and pagination
+  use one repeatable-read snapshot, newest createdAt/id order. No stale counters.
+- Additive review schema/migration with separate `drizzle.review_migrations`;
+  no applied migration rewrite. Newly created isolated
+  `foody_5c4_test_20261011153706` verified absent/empty before migrations;
+  initial/rerun PASS, history 3 base + 1 payment + 1 Cart + 1 Checkout + 1 Reviews.
+  No existing shared/user/development/production database was modified.
+- Implementation/QA complete: targeted 21/21 and final full regression
+  121/121 PASS (12 files, zero failures/skips). Native application/test
+  typecheck, lint, build, diff check and Drizzle snapshot/schema comparison PASS.
+  Integration uses existing Debian Node 22 fallback; compiler/lint/build native
+  Termux. No tools or dependencies reinstalled. Security/migration review covers
+  eligibility/ownership, assignment/privacy, bounds, atomic rollback, concurrent
+  duplicates, immutable references and deferred purchased-menu constraints.
+- Actual frontend Reviews types/hooks/modal/display inspected. Owned shapes
+  and request fields preserved; public user.id/order transactionId omitted
+  for privacy (documented type adjustment needed). No frontend, Cart, Checkout,
+  payment, dashboard or payout logic modified. Existing catalog API is unchanged;
+  aggregate ratings are available from Reviews public summary.
+- COMPLETED exists in storage, but no completion-transition API is added here;
+  newly placed PENDING orders cannot yet qualify through a full customer flow.
+  No moderation, retention/anonymization job, frontend E2E or live deployment.
+  Contract: `docs/REVIEWS_API.md`; evidence: `docs/SESSION_REVIEWS_HANDOFF.md`.
+  Authorized focused Git closeout/parity and lock release are reported separately.
+
+Stop after Reviews Git closeout. The next domain or frontend adaptation needs
+its own authorized session. Deployment to a user database requires operational
+migration/recovery review.
