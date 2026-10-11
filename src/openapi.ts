@@ -1,4 +1,5 @@
 import { catalogPaths, catalogSchemas } from "./modules/restaurants/openapi.js";
+import { cartPaths, cartSchemas } from "./modules/cart/openapi.js";
 
 export const openApiDocument = {
   openapi: "3.0.3",
@@ -18,6 +19,7 @@ export const openApiDocument = {
   ],
 
   tags: [
+    { name: "Cart", description: "Authenticated customer shopping state." },
     { name: "Restaurant and Menu", description: "Public catalog and authorized management." },
     {
       name: "Authentication",
@@ -35,6 +37,7 @@ export const openApiDocument = {
     },
 
     schemas: {
+      ...cartSchemas,
       ...catalogSchemas,
       PublicUser: {
         type: "object",
@@ -147,6 +150,7 @@ export const openApiDocument = {
   },
 
   paths: {
+    ...cartPaths,
     ...catalogPaths,
     "/api/auth/register": {
       post: {

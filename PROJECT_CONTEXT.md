@@ -422,7 +422,7 @@ Historical Orders Storage Foundation closeout (2026-10-10):
 - No automatic commit or push. See `docs/ORDERS_STORAGE.md` for limitations,
   migration safety, recovery and opt-in database tests.
 
-Subsequent verified state (2026-10-11):
+Historical Session 5C.4 finalization evidence (2026-10-11):
 
 - Orders Storage Foundation committed as `852cc55`; Payment + Best Seller
   committed as `6f40488c508f84a1c676725a65c66f715155e8b2`.
@@ -446,5 +446,36 @@ Subsequent verified state (2026-10-11):
 - Protected untracked handoff/backup files remain preserved. No commit or push
   is authorized for this finalization; documentation awaits owner review.
 
-Next safe step: review the finalization documentation diff and approve any
-commit/push separately. Do not repeat implementation or isolated migrations.
+Session 5C.4 Git closeout subsequently completed at
+`0a8342af0c789809dcd5a9718da5fd1f514a3f6b`, with local/remote parity verified.
+The above pre-closeout evidence and handoff remain historical records.
+
+Current authorized session — Cart Persistence + API (2026-10-11):
+
+- Starting baseline `0a8342af0c789809dcd5a9718da5fd1f514a3f6b`; verified main,
+  origin/main parity and no active locks before scoped ownership acquisition.
+- Implementation and QA complete: authenticated CUSTOMER Cart persistence;
+  GET/POST/DELETE `/api/cart`, PUT/DELETE `/api/cart/{id}`. No Checkout,
+  Orders, Payments, Reviews or frontend implementation changes.
+- Preserves observed SidiqLabs frontend request/grouped-response contract and
+  numeric item IDs. Add increments duplicates; update replaces quantity.
+  MVP limits: one restaurant, 50 menu lines, quantity 1..99 per line.
+  Prices are current server catalog values in integer rupiah. See
+  `docs/CART_API.md` for availability, concurrency and frontend adapter needs.
+- Additive Cart schema/migration uses `src/db/cart-schema.ts` and
+  `drizzle/cart/0000_cart_persistence.sql`, tracked by `drizzle.cart_migrations`.
+  Existing applied base/payment migrations remain unchanged.
+- Newly created disposable DB `foody_5c4_test_20261011112500` verified empty
+  before migrations. Migration and rerun PASS; final history 3 base, 1 payment,
+  1 cart. No existing user/development/production database was modified.
+- Fresh Debian Node v22.23.3 full regression: 72/72 PASS, 10/10 files, zero
+  failures/skips, including 22 Cart integration/constraint/concurrency tests.
+  Typecheck, test typing, lint and production build PASS. Security review
+  covered current-role/ownership checks, forged financial fields, resource
+  bounds, transactional conflicts and separation from order/payment writes.
+- Protected handoff and backup remain untouched. User explicitly authorized
+  focused Cart commit/push after QA; Git closeout/parity is reported separately
+  in the final session response. See `docs/SESSION_CART_HANDOFF.md` for evidence.
+
+Next safe step after Git closeout: obtain authorization for the next domain
+session. Deployment to any user database requires separate operational review.
