@@ -1,0 +1,216 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.order_checkouts": {
+      "name": "order_checkouts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "request_hash": {
+          "name": "request_hash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "restaurant_name": {
+          "name": "restaurant_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_address": {
+          "name": "delivery_address",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "varchar(1000)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "item_count": {
+          "name": "item_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "order_checkouts_order_unique": {
+          "name": "order_checkouts_order_unique",
+          "columns": [
+            {
+              "expression": "order_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "order_checkouts_customer_key_unique": {
+          "name": "order_checkouts_customer_key_unique",
+          "columns": [
+            {
+              "expression": "customer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "idempotency_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "order_checkouts_customer_created_idx": {
+          "name": "order_checkouts_customer_created_idx",
+          "columns": [
+            {
+              "expression": "customer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "order_checkouts_order_id_orders_id_fk": {
+          "name": "order_checkouts_order_id_orders_id_fk",
+          "tableFrom": "order_checkouts",
+          "tableTo": "orders",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "order_checkouts_customer_id_users_id_fk": {
+          "name": "order_checkouts_customer_id_users_id_fk",
+          "tableFrom": "order_checkouts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "order_checkouts_key_valid": {
+          "name": "order_checkouts_key_valid",
+          "value": "\"order_checkouts\".\"idempotency_key\" ~ '^[A-Za-z0-9_-]{16,128}$'"
+        },
+        "order_checkouts_hash_valid": {
+          "name": "order_checkouts_hash_valid",
+          "value": "\"order_checkouts\".\"request_hash\" ~ '^[a-f0-9]{64}$'"
+        },
+        "order_checkouts_address_bounds": {
+          "name": "order_checkouts_address_bounds",
+          "value": "length(btrim(\"order_checkouts\".\"delivery_address\")) BETWEEN 10 AND 500"
+        },
+        "order_checkouts_phone_valid": {
+          "name": "order_checkouts_phone_valid",
+          "value": "\"order_checkouts\".\"phone\" ~ '^[+0-9() -]{8,30}$' AND \"order_checkouts\".\"phone\" ~ '[0-9]'"
+        },
+        "order_checkouts_payment_method": {
+          "name": "order_checkouts_payment_method",
+          "value": "\"order_checkouts\".\"payment_method\" IN ('BNI Bank Negara Indonesia','BRI Bank Rakyat Indonesia','BCA Bank Central Asia','Mandiri')"
+        },
+        "order_checkouts_item_count": {
+          "name": "order_checkouts_item_count",
+          "value": "\"order_checkouts\".\"item_count\" BETWEEN 1 AND 50"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "id": "32dd9b4c-02a7-4132-875d-13569d9dbf62",
+  "prevId": "00000000-0000-0000-0000-000000000000"
+}

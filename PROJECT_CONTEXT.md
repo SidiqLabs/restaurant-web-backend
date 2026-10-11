@@ -450,7 +450,7 @@ Session 5C.4 Git closeout subsequently completed at
 `0a8342af0c789809dcd5a9718da5fd1f514a3f6b`, with local/remote parity verified.
 The above pre-closeout evidence and handoff remain historical records.
 
-Current authorized session — Cart Persistence + API (2026-10-11):
+Completed session — Cart Persistence + API (2026-10-11):
 
 - Starting baseline `0a8342af0c789809dcd5a9718da5fd1f514a3f6b`; verified main,
   origin/main parity and no active locks before scoped ownership acquisition.
@@ -477,5 +477,43 @@ Current authorized session — Cart Persistence + API (2026-10-11):
   focused Cart commit/push after QA; Git closeout/parity is reported separately
   in the final session response. See `docs/SESSION_CART_HANDOFF.md` for evidence.
 
-Next safe step after Git closeout: obtain authorization for the next domain
-session. Deployment to any user database requires separate operational review.
+Cart Git closeout completed at `62ad0dc539cf31a4006c9767fa5848685b5a8ee7`,
+with full local/origin main parity verified before the next session.
+
+Current authorized session — Checkout + Order Creation (2026-10-11):
+
+- Starting main/origin baseline `62ad0dc539cf31a4006c9767fa5848685b5a8ee7`;
+  no active locks and no unrelated tracked changes before scoped ownership.
+- Implemented POST `/api/order/checkout` and GET `/api/order/my-order`:
+  authenticated current CUSTOMER, owned selected Cart items, one restaurant,
+  authoritative catalog prices in integer rupiah and immutable purchase
+  snapshots. Atomic transactions consume only selected cart rows after all
+  order writes succeed. Persistent per-customer idempotency and shared Cart
+  customer locks cover retries and concurrent requests.
+- New orders remain PENDING/UNPAID; payment and fulfillment state remain
+  separate. No gateway, money movement, fulfillment API, reviews or payouts.
+- Additive `src/db/checkout-schema.ts` and
+  `drizzle/checkout/0000_checkout_placement.sql` use a separate checkout ledger;
+  applied base/payment/Cart migrations remain unchanged. Fresh disposable
+  `foody_5c4_test_20261011140145` was verified absent/empty before migration.
+  Initial/rerun migration PASS; final history 3 base + 1 payment + 1 Cart +
+  1 checkout. No existing user/development/production DB was modified.
+- Fresh targeted 28/28 and full regression 100/100 PASS (11 files, zero
+  failures/skips). Native Termux typecheck, test typing, lint and build PASS;
+  diff check and checkout Drizzle snapshot/schema comparison PASS. Integration
+  tests used the documented existing Debian Node 22 fallback because native
+  argon2 still fails. Final security-error hardening received repeated QA.
+- Actual frontend payload/response shapes are preserved, with explicitly
+  required adapters: Idempotency-Key, removal of client cart deletion after
+  success, server-returned zero fees, pending-payment UI and pending/all
+  history filters. Frontend files were not modified. See `docs/CHECKOUT_API.md`.
+- Security/migration review covered role/ownership, forged financial/state
+  fields, quantity/resource bounds, overflow, concurrency, rollback, immutable
+  facts and safe error logging. Protected handoff/backup remain untouched.
+  Fresh evidence, initial failures/recovery and limitations are recorded in
+  `docs/SESSION_CHECKOUT_HANDOFF.md`. Authorized focused commit/push and full
+  SHA parity are independently reported at Git closeout.
+
+Next safe step after Checkout Git closeout: a separately authorized frontend
+adapter or next-domain session. Deployment to a user database requires separate
+operational review. Do not infer payment success from checkout.

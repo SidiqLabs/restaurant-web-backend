@@ -15,6 +15,7 @@ import { restoRouter } from "./routes/resto.js";
 import { paymentsRouter } from "./routes/payments.js";
 import { healthRouter } from "./routes/health.js";
 import { cartRouter } from "./routes/cart.js";
+import { ordersRouter } from "./routes/orders.js";
 
 // Keep application construction separate from server startup so tests
 // can exercise the full HTTP stack without binding to a network port.
@@ -89,6 +90,7 @@ export function createApp() {
   app.use("/api/auth", authRouter);
   app.use("/api/resto", restoRouter);
   app.use("/api/order", paymentsRouter);
+  app.use("/api/order", ordersRouter);
   app.use("/api/cart", cartRouter);
 
   app.use(notFoundHandler);
