@@ -352,3 +352,18 @@ Report observed state separately from intended design.
 Before modifying project code, read `docs/CODEX_DEVELOPMENT_AUTONOMY.md`.
 
 Apply its DRAFT, IN_PROGRESS, FINAL, and LOCKED classifications while preserving the authority of `PROJECT_CONTEXT.md` and existing work-lock rules.
+
+## Device Environment Continuity
+
+Before installing tools, running agents, migrations, or test suites, read
+`docs/environments/README.md` and the device-specific guide. Consult
+`docs/environments/VERIFIED_BASELINE.md` to distinguish proven configurations
+from experiments. Do not repeat setup steps without checking current state.
+
+For Android, prefer a vetted, verified native Termux Codex runtime, with Debian
+PRoot used only for tests requiring Linux-native dependencies. Never treat
+`tmux` as protection against Android SIGKILL. Preserve logs and checkpoints.
+
+All environment documentation edits require the repository's work-lock protocol.
+Never store secrets or modify protected user files. Environment documentation
+cannot override PROJECT_CONTEXT.md or existing AGENTS.md rules.
