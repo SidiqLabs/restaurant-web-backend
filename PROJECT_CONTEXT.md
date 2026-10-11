@@ -379,7 +379,7 @@ Completed sessions:
   - Security review: PASS
   - Production dependency audit: 0 vulnerabilities
 
-Current implementation baseline before Orders Storage Foundation:
+Historical implementation baseline before Orders Storage Foundation:
 
 `ca0b17d` (verified local main; remote synchronization not checked in this session)
 
@@ -399,7 +399,7 @@ Subsequent completed implementation sessions (verified local Git history):
 - Session 5c1 — Restaurant search — `a101382`
 - Session 5c2 — Restaurant recommended — `ca0b17d`
 
-Current authorized session (2026-10-10):
+Historical Orders Storage Foundation closeout (2026-10-10):
 
 - Orders Storage Foundation; owner `codex`, scope `orders-storage-foundation`.
 - Owner decision: **DATABASE-FIRST READINESS**. Real PostgreSQL structures must
@@ -422,6 +422,29 @@ Current authorized session (2026-10-10):
 - No automatic commit or push. See `docs/ORDERS_STORAGE.md` for limitations,
   migration safety, recovery and opt-in database tests.
 
-Next safe step: verify an isolated development/test database, apply the reviewed
-nondestructive migration, and run the rollback-only PostgreSQL invariant test.
-Later domain implementation requires its own authorized scope and work locks.
+Subsequent verified state (2026-10-11):
+
+- Orders Storage Foundation committed as `852cc55`; Payment + Best Seller
+  committed as `6f40488c508f84a1c676725a65c66f715155e8b2`.
+- Session 5C.4 implementation is complete. Payment confirmation and refund use
+  manual current-ADMIN settlement attestation; provider integration and money
+  movement remain outside this increment. Best Seller uses persisted PAID
+  evidence and excludes cancelled/refunded orders. See `docs/PAYMENT_BEST_SELLER.md`.
+- Fresh finalization QA on Debian PRoot Node v22.23.3: full regression 50/50
+  tests, 9/9 files, zero failures/skips; typecheck, lint and build PASS.
+- Verified existing isolated DB `foody_5c4_test_20261011073800` on loopback
+  PostgreSQL 18.2: three base migrations and one payment migration already
+  present. Rollback-only storage invariants PASS. No migration ran during
+  finalization; no production/development database was used.
+- Local main remains `130652af67e3650de3e808d950a7d0ddad096a62`.
+  Actual GitHub main verified read-only with `git ls-remote` at
+  `6f40488c508f84a1c676725a65c66f715155e8b2`; local main is one documentation
+  commit ahead. This is point-in-time remote evidence, not assumed parity.
+- Historical focused regression 20/20 is recorded in `docs/SESSION_5C4_HANDOFF.md`;
+  it was not separately rerun during finalization. Fresh evidence and reporting
+  limitations are recorded in `docs/SESSION_5C4_FINALIZATION.md`.
+- Protected untracked handoff/backup files remain preserved. No commit or push
+  is authorized for this finalization; documentation awaits owner review.
+
+Next safe step: review the finalization documentation diff and approve any
+commit/push separately. Do not repeat implementation or isolated migrations.
