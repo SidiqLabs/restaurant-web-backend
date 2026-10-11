@@ -118,3 +118,24 @@ export const orderItems = pgTable("order_items", {
   check("order_items_total_nonnegative", sql`${table.lineTotalRupiah} >= 0`),
   check("order_items_total_matches", sql`${table.lineTotalRupiah}::bigint = ${table.unitPriceRupiah}::bigint * ${table.quantity}::bigint`),
 ]);
+
+// Trusted manual settlement evidence; no fulfillment state implies payment.
+export const paymentStatus = pgEnum("payment_status", ["PAID", "REFUNDED"]);
+export const orderPayments = pgTable("order_payments", {
+  orderId: uuid("order_id").primaryKey().references(() => orders.id, { onDelete: "restrict" }),
+  status: paymentStatus("status").notNull().default("PAID"),
+  reference: varchar("reference", { length: 100 }).notNull(),
+  confirmedBy: uuid("confirmed_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  confirmedAt: timestamp("confirmed_at", { withTimezone: true }).notNull().defaultNow(),
+  refundedBy: uuid("refunded_by").references(() => users.id, { onDelete: "restrict" }),
+  refundedAt: timestamp("refunded_at", { withTimezone: true }),
+}, (table) => [
+  uniqueIndex("order_payments_reference_unique").on(table.reference),
+  check("order_payments_refund_state", sql`(${table.status} = 'PAID' AND ${table.refundedBy} IS NULL AND ${table.refundedAt} IS NULL) OR (${table.status} = 'REFUNDED' AND ${table.refundedBy} IS NOT NULL AND ${table.refundedAt} IS NOT NULL AND ${table.refundedAt} >= ${table.confirmedAt})`),
+]);
+
+export const orderCancellations = pgTable("order_cancellations", {
+  orderId: uuid("order_id").primaryKey().references(() => orders.id, { onDelete: "restrict" }),
+  cancelledBy: uuid("cancelled_by").notNull().references(() => users.id, { onDelete: "restrict" }),
+  cancelledAt: timestamp("cancelled_at", { withTimezone: true }).notNull().defaultNow(),
+});

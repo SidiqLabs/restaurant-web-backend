@@ -1,3 +1,4 @@
+import { isolatedDatabase } from "../scripts/isolated-database-guard.js";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { asc, eq } from "drizzle-orm";
@@ -15,7 +16,7 @@ const message = "Catalog suggestions ordered by restaurant ID; not personalized"
 describe("public recommended restaurants", () => {
   beforeAll(async () => {
     const result = await pool.query<{ name: string }>("SELECT current_database() AS name");
-    if (result.rows[0]?.name !== "restaurant_web_test") throw new Error("Recommendation tests require restaurant_web_test");
+    if (result.rows[0]?.name !== isolatedDatabase) throw new Error("Recommendation tests require the configured isolated test database");
     const [owner] = await db.insert(users).values({ name: "Recommendation fixture", email: `recommended-${crypto.randomUUID()}@example.com`, passwordHash: "unused-test-hash", role: "RESTAURANT_OWNER" }).returning();
     ownerId = owner!.id;
     const rows = await db.insert(restaurants).values(Array.from({ length: 21 }, (_, index) => ({ ownerId: ownerId!, name: `Suggestion ${21 - index}`, address: "Bandung" }))).returning();

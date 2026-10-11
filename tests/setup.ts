@@ -1,7 +1,8 @@
-// Tests must provide required configuration explicitly rather than weakening
-// production environment validation with development-only fallback values.
+import { randomBytes } from "node:crypto";
+import { installIsolatedDatabaseGuard } from "../scripts/isolated-database-guard.js";
+
+// Never replace the operator's URL with a development or shared database.
 process.env.NODE_ENV = "test";
-process.env.DATABASE_URL =
-  "postgresql://test:test@127.0.0.1:5432/restaurant_web_test";
-process.env.JWT_SECRET =
-  "test-only-jwt-secret-that-is-at-least-32-characters";
+process.env.JWT_SECRET = randomBytes(32).toString("hex");
+process.env.LOG_LEVEL = "silent";
+installIsolatedDatabaseGuard();

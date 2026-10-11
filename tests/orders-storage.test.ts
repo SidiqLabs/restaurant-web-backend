@@ -1,3 +1,4 @@
+import { isolatedDatabase } from "../scripts/isolated-database-guard.js";
 import { describe, expect, it } from "vitest";
 import pg from "pg";
 
@@ -7,8 +8,8 @@ describe.skipIf(!url)("orders PostgreSQL invariants (rollback only)", () => {
   it("preserves snapshots and rejects invalid money, relationships and deletion", async () => {
     const target = new URL(url!);
     if (!["localhost", "127.0.0.1", "[::1]"].includes(target.hostname) ||
-        target.pathname !== "/restaurant_web_test") {
-      throw new Error("Requires explicitly configured local restaurant_web_test");
+        target.pathname !== `/${isolatedDatabase}`) {
+      throw new Error("Requires explicitly configured local isolated test database");
     }
     const client = new pg.Client({ connectionString: url, connectionTimeoutMillis: 3000 });
     await client.connect();
@@ -16,7 +17,7 @@ describe.skipIf(!url)("orders PostgreSQL invariants (rollback only)", () => {
       const identity = await client.query<{ name: string; recovery: boolean }>(
         "SELECT current_database() AS name, pg_is_in_recovery() AS recovery",
       );
-      expect(identity.rows[0]).toEqual({ name: "restaurant_web_test", recovery: false });
+      expect(identity.rows[0]).toEqual({ name: isolatedDatabase, recovery: false });
       await client.query("BEGIN");
       await client.query("SET LOCAL statement_timeout = '5s'");
       const reject = async (sql: string, values: unknown[], code: string) => {

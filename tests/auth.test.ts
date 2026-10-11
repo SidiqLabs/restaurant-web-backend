@@ -1,4 +1,5 @@
 import request from "supertest";
+import { inArray } from "drizzle-orm";
 import {
   afterAll,
   beforeEach,
@@ -13,6 +14,11 @@ import {
   db,
 } from "../src/db/client.js";
 import { users } from "../src/db/schema.js";
+
+const marker = crypto.randomUUID();
+const fixtureEmail = (name: string) => `${name}-${marker}@example.com`;
+const fixtureEmails = ["sidiq", "user", "admin", "login", "existing", "missing", "profile"].map(fixtureEmail);
+const cleanup = () => db.delete(users).where(inArray(users.email, fixtureEmails));
 
 const PASSWORD = "StrongPassphrase123!";
 
@@ -51,11 +57,11 @@ function bodyAs<T>(body: unknown): T {
 
 describe("auth and identity", () => {
   beforeEach(async () => {
-    await db.delete(users);
+    await cleanup();
   });
 
   afterAll(async () => {
-    await closeDatabase();
+    try { await cleanup(); } finally { await closeDatabase(); }
   });
 
   it("registers a normalized customer safely", async () => {
@@ -63,7 +69,7 @@ describe("auth and identity", () => {
       .post("/api/auth/register")
       .send({
         name: "Sidiq",
-        email: "  SIDIQ@example.com ",
+        email: `  ${fixtureEmail("sidiq").toUpperCase()} `,
         password: PASSWORD,
       });
 
@@ -72,7 +78,7 @@ describe("auth and identity", () => {
 
     expect(body.data.user).toMatchObject({
       name: "Sidiq",
-      email: "sidiq@example.com",
+      email: fixtureEmail("sidiq"),
       role: "CUSTOMER",
     });
 
@@ -90,7 +96,7 @@ describe("auth and identity", () => {
       .post("/api/auth/register")
       .send({
         name: "First",
-        email: "user@example.com",
+        email: fixtureEmail("user"),
         password: PASSWORD,
       })
       .expect(201);
@@ -99,7 +105,7 @@ describe("auth and identity", () => {
       .post("/api/auth/register")
       .send({
         name: "Second",
-        email: " USER@example.com ",
+        email: ` ${fixtureEmail("user").toUpperCase()} `,
         password: PASSWORD,
       });
 
@@ -111,7 +117,7 @@ describe("auth and identity", () => {
       .post("/api/auth/register")
       .send({
         name: "Admin Attempt",
-        email: "admin@example.com",
+        email: fixtureEmail("admin"),
         password: PASSWORD,
         role: "ADMIN",
       });
@@ -124,7 +130,7 @@ describe("auth and identity", () => {
       .post("/api/auth/register")
       .send({
         name: "Login User",
-        email: "login@example.com",
+        email: fixtureEmail("login"),
         password: PASSWORD,
       })
       .expect(201);
@@ -132,7 +138,7 @@ describe("auth and identity", () => {
     const response = await request(app)
       .post("/api/auth/login")
       .send({
-        email: " LOGIN@example.com ",
+        email: ` ${fixtureEmail("login").toUpperCase()} `,
         password: PASSWORD,
       });
 
@@ -140,7 +146,7 @@ describe("auth and identity", () => {
     const body = bodyAs<AuthResponseBody>(response.body);
 
     expect(body.data.user.email).toBe(
-      "login@example.com",
+      fixtureEmail("login"),
     );
     expect(body.data.accessToken).toBeTypeOf("string");
   });
@@ -150,7 +156,7 @@ describe("auth and identity", () => {
       .post("/api/auth/register")
       .send({
         name: "Existing",
-        email: "existing@example.com",
+        email: fixtureEmail("existing"),
         password: PASSWORD,
       })
       .expect(201);
@@ -158,14 +164,14 @@ describe("auth and identity", () => {
     const wrongPassword = await request(app)
       .post("/api/auth/login")
       .send({
-        email: "existing@example.com",
+        email: fixtureEmail("existing"),
         password: "WrongPassphrase123!",
       });
 
     const unknownEmail = await request(app)
       .post("/api/auth/login")
       .send({
-        email: "missing@example.com",
+        email: fixtureEmail("missing"),
         password: "WrongPassphrase123!",
       });
 
@@ -189,7 +195,7 @@ describe("auth and identity", () => {
       .post("/api/auth/register")
       .send({
         name: "Profile User",
-        email: "profile@example.com",
+        email: fixtureEmail("profile"),
         password: PASSWORD,
       });
 
@@ -211,7 +217,7 @@ describe("auth and identity", () => {
 
     expect(body.data).toMatchObject({
       name: "Profile User",
-      email: "profile@example.com",
+      email: fixtureEmail("profile"),
       role: "CUSTOMER",
     });
     expect(

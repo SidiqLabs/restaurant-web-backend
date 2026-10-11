@@ -2,10 +2,13 @@ import { Router } from "express";
 import { authenticate } from "../middleware/authenticate.js";
 import { catalogHandler } from "../modules/restaurants/restaurant.controller.js";
 
+import { bestSellerHandler } from "../modules/best-seller/best-seller.controller.js";
+
 export const restoRouter = Router();
 restoRouter.get("/", catalogHandler("list"));
 restoRouter.post("/", authenticate, catalogHandler("create"));
 restoRouter.get("/recommended", catalogHandler("recommended"));
+restoRouter.get("/best-seller", bestSellerHandler);
 restoRouter.get("/search", catalogHandler("search"));
 restoRouter.get("/:restaurantId", catalogHandler("get"));
 restoRouter.patch("/:restaurantId", authenticate, catalogHandler("update"));

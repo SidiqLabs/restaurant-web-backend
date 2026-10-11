@@ -1,3 +1,4 @@
+import { isolatedDatabase } from "../scripts/isolated-database-guard.js";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { and, eq, inArray } from "drizzle-orm";
@@ -19,7 +20,7 @@ let menuId: number;
 describe("restaurant and menu integration", () => {
   beforeAll(async () => {
     const result = await pool.query<{ name: string }>("SELECT current_database() AS name");
-    if (result.rows[0]?.name !== "restaurant_web_test") throw new Error("Catalog tests require restaurant_web_test");
+    if (result.rows[0]?.name !== isolatedDatabase) throw new Error("Catalog tests require the configured isolated test database");
     for (const role of ["RESTAURANT_OWNER", "ADMIN", "CUSTOMER", "RESTAURANT_STAFF", "RESTAURANT_OWNER"] as const) {
       const key = role === "RESTAURANT_OWNER" && tokens[role] ? "other" : role;
       const [user] = await db.insert(users).values({ name: "Catalog fixture", email: `catalog-${crypto.randomUUID()}@example.com`, passwordHash: "unused-test-hash", role }).returning();

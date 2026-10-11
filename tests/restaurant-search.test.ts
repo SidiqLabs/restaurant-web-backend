@@ -1,3 +1,4 @@
+import { isolatedDatabase } from "../scripts/isolated-database-guard.js";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
@@ -23,7 +24,7 @@ async function search(q: string, page = 1, limit = 20): Promise<SearchData> {
 describe("public restaurant search with PostgreSQL", () => {
   beforeAll(async () => {
     const result = await pool.query<{ name: string }>("SELECT current_database() AS name");
-    if (result.rows[0]?.name !== "restaurant_web_test") throw new Error("Search tests require restaurant_web_test");
+    if (result.rows[0]?.name !== isolatedDatabase) throw new Error("Search tests require the configured isolated test database");
     const [owner] = await db.insert(users).values({ name: "Search fixture", email: `search-${marker}@example.com`, passwordHash: "unused-test-hash", role: "RESTAURANT_OWNER" }).returning();
     ownerId = owner!.id;
     const rows = await db.insert(restaurants).values([
