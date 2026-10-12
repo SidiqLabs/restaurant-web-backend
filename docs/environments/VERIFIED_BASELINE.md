@@ -1,6 +1,6 @@
 # Environment Verification Ledger
 
-**Last documentation update:** 2026-10-11. Session 5C.4 finalization entries below are freshly verified; other entries retain historical qualifications.
+**Last documentation update:** 2026-10-12. Codespaces handoff checks are scoped below; Session 5C.4 entries retain their historical verification qualifications.
 
 Legend: **VERIFIED** = test with recorded evidence; **OBSERVED** = reported behavior; **UNTESTED** = planned but not run; **BLOCKED** = attempted but could not complete.
 
@@ -32,6 +32,32 @@ Legend: **VERIFIED** = test with recorded evidence; **OBSERVED** = reported beha
   2026-10-11 10:26:52 UTC / 17:26:52 WIB. Tests took 76.90 seconds.
 - Eligible PAID/non-CANCELLED payment count was zero before and after regression.
   Fixtures retain immutable refunded/cancelled evidence in the isolated DB.
+
+## Codespaces validation handoff — 2026-10-12
+
+- Scope: documentation-only handoff in GitHub Codespaces at
+  `/workspaces/restaurant-web-backend`; repository remote confirmed as
+  `https://github.com/SidiqLabs/restaurant-web-backend`.
+- Historical Codespaces validation (**OBSERVED**, user-supplied session handoff):
+  isolated PostgreSQL validation COMPLETE, 142/142 tests PASS, all QA gates PASS;
+  reported baseline `main` at `34e275d1de0179dbcb019ee40258bdc5eaad88dc`,
+  origin/main parity 0/0 and clean worktree. Raw Codespaces execution evidence,
+  tool versions and database identity are **UNKNOWN** in this session.
+- Existing committed evidence: [Order Lifecycle handoff](../SESSION_ORDER_LIFECYCLE_HANDOFF.md)
+  records historical 142/142 PASS (13 files), final affected suite 21/21 PASS,
+  application/test typechecks, lint and build PASS. That evidence used
+  Termux/Debian PRoot; it does not independently verify the Codespaces report.
+- This session (**OBSERVED**): starting branch/HEAD and clean worktree confirmed;
+  local `HEAD...origin/main` comparison returned 0/0. No fetch was performed,
+  so current live GitHub parity is **UNKNOWN**. Target was FREE before ownership
+  was acquired and verified through the repository lock commands.
+- Documentation verification: targeted diff reviewed; `git diff --check` PASS.
+  Tests, typecheck, lint and build were not rerun under the explicit task scope.
+  PostgreSQL was not inspected, recreated or migrated; current readiness is
+  **UNKNOWN**. No application, schema or migration files changed.
+- Next action: use this historical handoff without repeating setup or validation;
+  inspect current environment/database identity before any future authorized
+  runtime work. This handoff authorizes no deployment or production DB action.
 
 ## Verification record template
 
