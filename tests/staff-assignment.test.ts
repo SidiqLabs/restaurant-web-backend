@@ -45,6 +45,12 @@ describe("Staff membership and order assignment", () => {
     await request(app).get(`/api/order/${orderId}/staff`).auth(token, { type: "bearer" }).expect(401);
     await expect(assignStaff(undefined, orderId, { staffId: ids.staff!, expectedStaffId: null })).rejects.toMatchObject({ status: 401 });
   });
+  it("does not intercept public reviews or unmatched routes with staff authentication", async () => {
+    await request(app).get(`/api/review/restaurant/${restaurantId}`).expect(200);
+    await request(app).get("/api/not-a-real-route").expect(404, { success: false, message: "Route not found" });
+    // Actual staff routes remain authenticated, including reads.
+    await request(app).get(`/api/order/${orderId}/staff`).expect(401);
+  });
   it("allows owner and global admin membership management with unique rows and stable retries", async () => {
     const first = await membership().expect(200);
     const repeat = await membership().expect(200); expect(repeat.body).toEqual(first.body);

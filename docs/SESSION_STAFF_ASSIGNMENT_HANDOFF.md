@@ -85,3 +85,21 @@ assignment is administrative metadata at any existing order state.
 No push/deployment is authorized. Final full regression and Swagger verification
 belong to the next integration phase. Commit SHA and final lock release are
 verified separately at closeout; this document does not predict those results.
+
+## Routing regression correction
+
+Initial feature commit: `7341fa60da54e3d1c3619344868d5175b351a86a`.
+The subsequent full integration run exposed a routing regression: 160/168 PASS,
+8 Reviews failures. The STAFF router mounted at `/api` applied authentication
+before checking whether a STAFF route matched, intercepting public Reviews.
+Its three operations now attach authentication individually. Protected STAFF
+operations remain authenticated; unrelated public and unmatched routes proceed
+to their own handlers. A new regression test verifies public Reviews HTTP 200,
+unknown API HTTP 404, and private STAFF HTTP 401.
+
+Fresh affected-suite run: 64/64 PASS (22 Staff + 21 Reviews + 21 lifecycle),
+3 files, zero failures/skips, exit 0, started 15:40:49 UTC, duration 10.06 seconds.
+Typecheck, test-inclusive compiler, lint and build PASS after the correction.
+The pending OpenAPI documentation phase was preserved separately; only STAFF
+route/test and this handoff belong to the correction commit. Final full
+integration rerun is recorded in the integration handoff, not inferred here.
