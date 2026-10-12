@@ -1,0 +1,5 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [{ "idx": 0, "version": "7", "when": 1791817500000, "tag": "0000_staff_assignment", "breakpoints": true }]
+}

@@ -3,6 +3,7 @@ import { cartPaths, cartSchemas } from "./modules/cart/openapi.js";
 import { checkoutPaths, checkoutSchemas } from "./modules/checkout/openapi.js";
 import { reviewPaths, reviewSchemas } from "./modules/reviews/openapi.js";
 import { lifecyclePaths } from "./modules/lifecycle/openapi.js";
+import { staffPaths } from "./modules/staff/openapi.js";
 
 export const openApiDocument = {
   openapi: "3.0.3",
@@ -22,6 +23,7 @@ export const openApiDocument = {
   ],
 
   tags: [
+    { name: "Staff Assignment", description: "Restaurant membership and scoped order assignment." },
     { name: "Reviews", description: "Verified completed-purchase restaurant reviews." },
     { name: "Orders", description: "Customer checkout and owned order history." },
     { name: "Cart", description: "Authenticated customer shopping state." },
@@ -158,6 +160,7 @@ export const openApiDocument = {
 
   paths: {
     ...lifecyclePaths,
+    ...staffPaths,
     ...cartPaths,
     ...checkoutPaths,
     ...reviewPaths,

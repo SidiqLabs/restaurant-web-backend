@@ -18,6 +18,7 @@ import { cartRouter } from "./routes/cart.js";
 import { ordersRouter } from "./routes/orders.js";
 import { reviewsRouter } from "./routes/reviews.js";
 import { lifecycleRouter } from "./routes/lifecycle.js";
+import { staffRouter } from "./routes/staff.js";
 
 // Keep application construction separate from server startup so tests
 // can exercise the full HTTP stack without binding to a network port.
@@ -94,6 +95,7 @@ export function createApp() {
   app.use("/api/order", paymentsRouter);
   app.use("/api/order", ordersRouter);
   app.use("/api/order", lifecycleRouter);
+  app.use("/api", staffRouter);
   app.use("/api/cart", cartRouter);
   app.use("/api/review", reviewsRouter);
 

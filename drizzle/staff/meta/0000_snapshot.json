@@ -1,0 +1,166 @@
+{
+  "id": "a73dc3c0-b542-42cc-865d-3ce1d61a52d1",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.order_staff": {
+      "name": "order_staff",
+      "schema": "",
+      "columns": {
+        "order_id": {
+          "name": "order_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "restaurant_id": {
+          "name": "restaurant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "staff_id": {
+          "name": "staff_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "order_staff_order_restaurant_fk": {
+          "name": "order_staff_order_restaurant_fk",
+          "tableFrom": "order_staff",
+          "tableTo": "orders",
+          "columnsFrom": [
+            "order_id",
+            "restaurant_id"
+          ],
+          "columnsTo": [
+            "id",
+            "restaurant_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "order_staff_membership_fk": {
+          "name": "order_staff_membership_fk",
+          "tableFrom": "order_staff",
+          "tableTo": "restaurant_staff",
+          "columnsFrom": [
+            "restaurant_id",
+            "staff_id"
+          ],
+          "columnsTo": [
+            "restaurant_id",
+            "staff_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.restaurant_staff": {
+      "name": "restaurant_staff",
+      "schema": "",
+      "columns": {
+        "restaurant_id": {
+          "name": "restaurant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "staff_id": {
+          "name": "staff_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "restaurant_staff_restaurant_id_restaurants_id_fk": {
+          "name": "restaurant_staff_restaurant_id_restaurants_id_fk",
+          "tableFrom": "restaurant_staff",
+          "tableTo": "restaurants",
+          "columnsFrom": [
+            "restaurant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "restaurant_staff_staff_id_users_id_fk": {
+          "name": "restaurant_staff_staff_id_users_id_fk",
+          "tableFrom": "restaurant_staff",
+          "tableTo": "users",
+          "columnsFrom": [
+            "staff_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "restaurant_staff_restaurant_id_staff_id_pk": {
+          "name": "restaurant_staff_restaurant_id_staff_id_pk",
+          "columns": [
+            "restaurant_id",
+            "staff_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "restaurant_staff_status": {
+          "name": "restaurant_staff_status",
+          "value": "\"restaurant_staff\".\"status\" IN ('active', 'revoked')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

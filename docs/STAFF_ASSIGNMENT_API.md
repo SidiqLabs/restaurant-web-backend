@@ -1,9 +1,7 @@
 # Staff Assignment API
 
-**Status: DRAFT — approved business rules and proposed API contract.**
-The implementation is uncommitted and integration tests have not run. These
-operations are not part of the committed application baseline. This document
-does not certify endpoint availability or security behavior.
+**Status: implemented; scoped QA and commit evidence are recorded in
+[the Staff Assignment handoff](SESSION_STAFF_ASSIGNMENT_HANDOFF.md).**
 
 Restaurant membership and per-order assignment are separate, additive records.
 Existing roles, lifecycle transitions, settlement and customer contracts remain
@@ -13,6 +11,8 @@ unchanged. STAFF still cannot call the lifecycle status endpoint.
 
 All operations require Bearer authentication, strict input and empty query
 parameters. Responses use `{success:true,data}` or `{success:false,message}`.
+Restaurant path IDs follow the catalog's canonical positive decimal int32
+format; user and order IDs are UUIDs.
 
 - `PUT /api/resto/{restaurantId}/staff/{staffId}` with
   `{"status":"active"}` or `{"status":"revoked"}` returns HTTP 200
@@ -76,7 +76,10 @@ dropping tables requires a separately authorized destructive recovery plan.
 
 OpenAPI documents all three operations at `/api-docs.json`.
 
-## Session handoff — 2026-10-12
+## Historical draft handoff — 2026-10-12
+
+The following records the earlier documentation-only interruption. Its UNKNOWN
+results do not describe the later completed QA; see the current handoff above.
 
 - Starting baseline: `9049db84c119d7027bbb06027aac3bab9e9ab62f`, `main`, clean
   worktree, no active locks. Discovery confirmed STAFF role exists but membership
