@@ -554,6 +554,41 @@ Reviews API session (2026-10-11):
   Contract: `docs/REVIEWS_API.md`; evidence: `docs/SESSION_REVIEWS_HANDOFF.md`.
   Authorized focused Git closeout/parity and lock release are reported separately.
 
-Stop after Reviews Git closeout. The next domain or frontend adaptation needs
-its own authorized session. Deployment to a user database requires operational
-migration/recovery review.
+Reviews stopped after its Git closeout. Subsequent domains or frontend
+adaptation require their own authorized sessions. Deployment to a user database
+requires operational migration/recovery review.
+
+Order Lifecycle session — implementation/QA complete (2026-10-12):
+
+- Baseline main/origin `f6d81dfa70bef4269e1d5da7fc2565c426b9bc68`;
+  Reviews closeout verified, tracked tree clean and protected untracked files
+  preserved. Exact scoped work-lock ownership acquired before edits.
+- Additive POST `/api/order/{orderId}/status` with strict expectedStatus/status.
+  Existing single-hop PENDING → CONFIRMED → PREPARING → READY → COMPLETED.
+  Current restaurant OWNER or explicit ADMIN only; unassigned STAFF/customer
+  denied, foreign restaurant owners receive 404. Role/ownership are DB-derived.
+- PAID evidence required for every forward step and repeat. Payment settlement
+  remains the existing separate ADMIN operation; checkout is not settlement.
+  Transaction/order lock plus expected-status comparison prevents stale writes;
+  exact retries preserve timestamps. Immutable purchase facts remain untouched.
+- Official completion now satisfies existing owned checkout Reviews eligibility,
+  without modifying Reviews rules or existing Checkout/Payment logic. No staff
+  assignment management, frontend, gateway, payout or production DB deployment.
+- No schema change/migration needed. New isolated disposable
+  `foody_5c4_test_20261011161300` verified absent/empty; prerequisite migration
+  application/rerun PASS, existing histories unchanged. No shared DB writes.
+- Fresh full regression 142/142 PASS (13 files, zero failures/skips), targeted
+  Lifecycle 21/21 PASS. After a lint-only exact-timestamp test assertion fix,
+  affected suite rerun 21/21 PASS; implementation unchanged. Native application
+  and test typecheck, lint, build and diff check PASS. Integration uses existing
+  Debian Node 22 fallback; no tools/dependencies reinstalled.
+- Security review covers actor/ownership revocation, forbidden fields,
+  settled-payment guard, illegal/stale/repeated transitions, lock concurrency,
+  rollback, safe errors, immutable facts and unchanged Reviews eligibility.
+  Constraints remain intact. Staff/free-order settlement and durable event
+  ledger are not implemented; privileged SQL must use the official API policy.
+- Contract: `docs/ORDER_LIFECYCLE_API.md`; fresh evidence and initial failure
+  corrections: `docs/SESSION_ORDER_LIFECYCLE_HANDOFF.md`. Authorized scoped
+  commit/push, full-SHA parity and final lock release are reported at closeout.
+
+Stop after Order Lifecycle Git closeout. Do not start another feature.

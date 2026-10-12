@@ -2,6 +2,7 @@ import { catalogPaths, catalogSchemas } from "./modules/restaurants/openapi.js";
 import { cartPaths, cartSchemas } from "./modules/cart/openapi.js";
 import { checkoutPaths, checkoutSchemas } from "./modules/checkout/openapi.js";
 import { reviewPaths, reviewSchemas } from "./modules/reviews/openapi.js";
+import { lifecyclePaths } from "./modules/lifecycle/openapi.js";
 
 export const openApiDocument = {
   openapi: "3.0.3",
@@ -156,6 +157,7 @@ export const openApiDocument = {
   },
 
   paths: {
+    ...lifecyclePaths,
     ...cartPaths,
     ...checkoutPaths,
     ...reviewPaths,
