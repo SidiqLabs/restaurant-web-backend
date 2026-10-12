@@ -4,6 +4,8 @@ import { checkoutPaths, checkoutSchemas } from "./modules/checkout/openapi.js";
 import { reviewPaths, reviewSchemas } from "./modules/reviews/openapi.js";
 import { lifecyclePaths } from "./modules/lifecycle/openapi.js";
 import { staffPaths } from "./modules/staff/openapi.js";
+import { paymentPaths } from "./modules/payments/openapi.js";
+import { bestSellerPaths } from "./modules/best-seller/openapi.js";
 
 export const openApiDocument = {
   openapi: "3.0.3",
@@ -23,6 +25,7 @@ export const openApiDocument = {
   ],
 
   tags: [
+    { name: "Manual Payment and Cancellation", description: "Existing current-ADMIN attestation; no provider integration or money movement." },
     { name: "Staff Assignment", description: "Restaurant membership and scoped order assignment." },
     { name: "Reviews", description: "Verified completed-purchase restaurant reviews." },
     { name: "Orders", description: "Customer checkout and owned order history." },
@@ -161,6 +164,18 @@ export const openApiDocument = {
   paths: {
     ...lifecyclePaths,
     ...staffPaths,
+    ...paymentPaths,
+    ...bestSellerPaths,
+    "/health": { get: {
+      tags: ["Health"], summary: "Read service health", security: [],
+      description: "Process health only; does not attest database readiness or deployment correctness.",
+      responses: { "200": { description: "Service is healthy", content: { "application/json": { schema: {
+        type: "object", required: ["success", "message", "data"], properties: {
+          success: { type: "boolean", enum: [true] }, message: { type: "string", enum: ["Service is healthy"] },
+          data: { type: "object", required: ["status"], properties: { status: { type: "string", enum: ["ok"] } } },
+        },
+      } } } } },
+    } },
     ...cartPaths,
     ...checkoutPaths,
     ...reviewPaths,
